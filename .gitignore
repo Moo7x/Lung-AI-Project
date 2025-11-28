@@ -1,0 +1,7 @@
+venv/
+datasets/
+runs/
+__pycache__/
+*.pt
+*.onnx
+.DS_Store
