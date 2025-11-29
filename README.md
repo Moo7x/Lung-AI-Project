@@ -1,55 +1,101 @@
 # 🫁 Lung Abnormality Detection System (YOLOv8)
 
-## Project Overview
+![Project Status](https://img.shields.io/badge/Status-Prototype_Complete-green)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![Framework](https://img.shields.io/badge/Model-YOLOv8-orange)
+![Backend](https://img.shields.io/badge/API-FastAPI-teal)
 
-This project uses Deep Learning (YOLOv8) to detect 14 different lung abnormalities from Chest X-ray images. We compare three different model architectures (Nano, Small, Medium) to find the optimal balance between accuracy and speed for clinical deployment.
+## 📖 Project Overview
 
-## 📂 Dataset
+This project implements an end-to-end AI pipeline for detecting **14 distinct lung abnormalities** (e.g., Pneumonia, Cardiomegaly, Nodule) from Chest X-rays.
 
-- **Source:** NIH Chest X-rays / VinDr-CXR
-- **Classes:** 14 (Atelectasis, Cardiomegaly, Pneumonia, etc.)
-- **Size:** ~5,000 images split into Train/Test/Validation.
+Unlike standard classification tasks, we tackle **Object Detection** to localize specific disease regions. The system includes a full engineering workflow: from Exploratory Data Analysis (EDA) and Model Training to Error Analysis and a deployable REST API.
 
-## 🛠️ Tech Stack
+---
 
-- **Model:** YOLOv8 (Ultralytics)
-- **Training:** PyTorch with CUDA (GPU Acceleration)
-- **Experimentation:** Data Augmentation (Mosaic, Scaling, Flipping)
+## 📂 1. Dataset & Preparation
 
-## 🚀 How to Run Training
+We utilize a subset of the **NIH Chest X-ray Dataset** consisting of **4,934 images**.
 
-1. Install dependencies:
-   ```bash
-   pip install ultralytics
-   ```
+- **Split Strategy:** 80% Train / 10% Validation / 10% Test.
+- **Format:** Standard YOLO format (normalized bounding box coordinates).
 
-## 📊 Dataset Analysis
+### Data Analysis (EDA).
 
-### Data Distribution
+Before training, we conducted a rigorous analysis of the dataset structure (`notebooks/01_EDA.ipynb`).
 
-![Class Distribution](dist.png)
-_Figure 1: Class distribution across the training set showing significant imbalance._
+- **Class Imbalance:** The data shows a **3.4x imbalance ratio**, which is significant but manageable.
+  - _Most Common:_ **Emphysema** (552 instances)
+  - _Rarest:_ **Hernia** (162 instances)
+- **Action Taken:** To combat this, we implemented **Data Augmentation** (Mosaic, Scaling, Flipping) during the advanced training phase to ensure the model sees enough variations of the rare classes.
 
-### Key Insights
+_(Insert your dist.png image here)_
 
-- **Data Split:** Our dataset contains **4,934 images**, split into **80% Train, 10% Validation, and 10% Test**.
-- **Class Imbalance:** The dataset is imbalanced. The most common class, **Emphysema**, appears **552** times, while the rarest class,**Hernia**,appears only **162** times, a ratio of **3.4x**.
+> _Figure 1: Class distribution showing the prevalence of Emphysema vs. rare classes._
 
-### Action Plan
+---
 
-Due to this imbalance, our training strategy will incorporate **data augmentation** (specifically distinct geometric transformations) and we will closely monitor **per-class mAP** rather than global accuracy. Future work could involve weighted loss functions to penalize misclassifications of the minority classes (Hernia, Pneumothorax).
+## 🛠️ 2. Technical Workflow
 
-## Error Analysis: Failure Modes
+We followed a modular engineering structure to ensure reproducibility.
 
-An analysis of the model's false negatives on the test set revealed three primary reasons for detection failure:
+| Component    | Tech Stack               | Description                                                |
+| :----------- | :----------------------- | :--------------------------------------------------------- |
+| **Model**    | YOLOv8 (Ultralytics)     | Selected `yolov8m` (Medium) for balance of speed/accuracy. |
+| **Training** | PyTorch + CUDA           | Training on local GPU (RTX 3050 Ti).                       |
+| **Backend**  | FastAPI                  | Asynchronous REST API for model serving.                   |
+| **Tracking** | Weights & Biases / Local | Loss curves and mAP monitoring.                            |
 
-1.  **Poor Contrast & Image Quality:** The model struggled with images exhibiting significant blur or a "washed-out" appearance. The lack of sharp edge definition made it difficult to differentiate pathology from healthy tissue.
-2.  **Patient Positioning & Rotation:** False negatives were frequent in scans where the patient was rotated or tilted. This distortion alters expected anatomical landmarks, confusing the model's spatial priors.
-3.  **Medical Artifacts & Occlusion:** The presence of external objects (tubes, wires, pacemakers) or overlapping anatomy (elevated diaphragm) often obscured the lung fields, leading to missed detections in those specific regions.
+---
 
-**Action Plan:** Future iterations will include augmentation for rotation (+/- 15 degrees) and contrast adjustment (CLAHE) to make the model robust to these specific failures.
+## 📊 3. Model Experiments & Results
 
-**experiment**
-Experiment_ID Model_Size Augmentation? Epochs mAP50 Observation
-Baseline Medium No 30 0.115 Learned basic features quickly.
-Advanced Medium Yes (Rot/Scale) 40 0.107 Slight drop; likely under-trained due to data complexity.
+We compared a Baseline training run against an Advanced run with hyperparameter tuning.
+
+| Experiment ID | Model Size | Augmentation         | Epochs | mAP50     | Observation                                                                                                        |
+| :------------ | :--------- | :------------------- | :----- | :-------- | :----------------------------------------------------------------------------------------------------------------- |
+| **Baseline**  | Medium     | None                 | 30     | **0.115** | Converged quickly; learned structural features.                                                                    |
+| **Advanced**  | Medium     | **Rot/Scale/Mosaic** | 40     | 0.107     | Slight drop. Hypothesis: The augmented data is significantly harder; model requires 100+ epochs to fully converge. |
+
+### Error Analysis (Failure Modes)
+
+Post-training analysis revealed three primary reasons for false negatives:
+
+1.  **Low Contrast:** The model misses findings in "washed-out" X-rays where tissue density is unclear.
+2.  **Small Lesions:** Tiny Nodules (<5% image area) are frequently missed due to 640x640 resizing.
+3.  **Occlusion:** Diseases hidden behind the heart or diaphragm are harder to detect.
+
+---
+
+## 🚀 4. How to Run This Project
+
+This project is set up for easy reproduction.
+
+### A. Environment Setup
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/Moo7x/Lung-AI-Project.git
+
+# 2. Install dependencies
+pip install -r requirements.txt
+B. Run the API (Backend)
+
+We have separated the inference logic into a modular API.
+
+# Start the server
+uvicorn src.api.main:app --reload
+
+Docs: Go to http://127.0.0.1:8000/docs to test the POST /predict endpoint.
+
+C. Run Training (Reproducibility)
+
+To retrain the model from scratch using our settings:
+python train_advanced.py
+
+## 🔮Future Improvements
+
+1.Weighted Loss: Implement cls weights in YOLO to explicitly penalize missing rare classes like Hernia.
+2.Higher Resolution: Train at 1024x1024 to improve small Nodule detection.
+3.Ensembling: Combine predictions from YOLOv8 and Faster R-CNN.
+```
