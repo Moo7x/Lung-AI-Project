@@ -22,6 +22,11 @@ except Exception as e:
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
+
+    # Sanity Check
+    if file.content_type not in ["image/jpeg", "image/png"]:
+        return {"error": "File type not supported. Please upload a JPEG or PNG image."}
+
     if model is None:
         return {"error": "Model failed to load. Check server logs."}
 
@@ -34,7 +39,7 @@ async def predict(file: UploadFile = File(...)):
 
     # 2. Run Inference
     # conf=0.15 -> Lower confidence threshold to catch more diseases (since medical data is hard)
-    results = model.predict(image, conf=0.15) 
+    results = model.predict(image, conf=0.15,augment=True) 
 
     # 3. Format Results
     detections = []
