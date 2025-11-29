@@ -48,3 +48,8 @@ An analysis of the model's false negatives on the test set revealed three primar
 3.  **Medical Artifacts & Occlusion:** The presence of external objects (tubes, wires, pacemakers) or overlapping anatomy (elevated diaphragm) often obscured the lung fields, leading to missed detections in those specific regions.
 
 **Action Plan:** Future iterations will include augmentation for rotation (+/- 15 degrees) and contrast adjustment (CLAHE) to make the model robust to these specific failures.
+
+**experiment**
+Experiment_ID Model_Size Augmentation? Epochs mAP50 Observation
+Baseline Medium No 30 0.115 Learned basic features quickly.
+Advanced Medium Yes (Rot/Scale) 40 0.107 Slight drop; likely under-trained due to data complexity.
