@@ -1,0 +1,484 @@
+/* Custom Styles for LungScan AI */
+:root {
+    --primary-color: #2c80ff;
+    --primary-light: #5a9dff;
+    --primary-dark: #0062cc;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-bg: #f8fafc;
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+body {
+    font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
+    min-height: 100vh;
+    color: #333;
+    padding-bottom: 2rem;
+}
+
+/* Enhanced Navigation */
+.navbar {
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+    backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand i {
+    font-size: 1.8rem;
+    margin-right: 10px;
+}
+
+/* Main Header Improvements */
+.display-5 {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+}
+
+.lead.text-secondary {
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Enhanced Cards */
+.card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    background: white;
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    border-radius: 16px 16px 0 0 !important;
+    border-bottom: none;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+}
+
+.card-header.bg-success {
+    background: linear-gradient(135deg, var(--success-color) 0%, #1e7e34 100%) !important;
+}
+
+.card-header h5 {
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.card-header h5 i {
+    margin-right: 10px;
+}
+
+/* Step Numbers for How It Works cards */
+.step-number {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 30px;
+    height: 30px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    z-index: 1;
+}
+
+.step-number.step-2 {
+    background: var(--success-color);
+}
+
+.step-number.step-3 {
+    background: var(--warning-color);
+}
+
+.step-number.step-4 {
+    background: var(--danger-color);
+}
+
+/* Improved Drop Zone */
+.drop-zone {
+    border: 3px dashed var(--primary-light);
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(44, 128, 255, 0.03) 0%, rgba(44, 128, 255, 0.08) 100%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 3rem !important;
+    text-align: center;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.drop-zone:hover {
+    background: linear-gradient(135deg, rgba(44, 128, 255, 0.08) 0%, rgba(44, 128, 255, 0.15) 100%);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.drop-zone.dragover {
+    background: linear-gradient(135deg, rgba(44, 128, 255, 0.15) 0%, rgba(44, 128, 255, 0.25) 100%);
+    border-color: var(--primary-dark);
+    animation: pulse-border 1.5s infinite;
+}
+
+.drop-zone i.fa-file-medical-alt {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+}
+
+.drop-zone h4 {
+    color: var(--primary-dark);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.drop-zone p.text-muted {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Enhanced Preview Section */
+.preview-container {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+#image-preview {
+    max-height: 300px;
+    width: auto;
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    background: white;
+    padding: 5px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Improved Buttons */
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 0.625rem 1.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(44, 128, 255, 0.3);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success-color) 0%, #1e7e34 100%);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #34ce57 0%, var(--success-color) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Results Section Improvements */
+#results-content .card.mb-3.border-primary {
+    border-left: 4px solid var(--primary-color);
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+}
+
+#disease-name {
+    color: var(--primary-dark);
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+
+#confidence-badge {
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+}
+
+#severity.text-danger {
+    font-weight: 600;
+}
+
+/* Table Improvements */
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table th {
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    color: var(--primary-dark);
+}
+
+.table td {
+    padding: 0.875rem;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(44, 128, 255, 0.05);
+    transition: background-color 0.2s ease;
+}
+
+/* Alert Improvements */
+.alert {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 1.25rem;
+    border-left: 4px solid;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    border-left-color: var(--warning-color);
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-left-color: var(--primary-color);
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    border-left-color: var(--danger-color);
+}
+
+/* Progress Bar */
+.progress {
+    height: 12px;
+    border-radius: 10px;
+    background-color: #e9ecef;
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+/* Feature Icons */
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(44, 128, 255, 0.1) 0%, rgba(44, 128, 255, 0.2) 100%);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.feature-icon:hover {
+    transform: scale(1.1) rotate(5deg);
+    background: linear-gradient(135deg, rgba(44, 128, 255, 0.2) 0%, rgba(44, 128, 255, 0.3) 100%);
+}
+
+.feature-icon i {
+    color: var(--primary-color);
+    font-size: 2rem;
+}
+
+.card.text-center .card-body h5 {
+    color: var(--primary-dark);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+/* Footer */
+footer {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-top: 1px solid #dee2e6;
+    margin-top: 3rem !important;
+    padding-top: 2rem !important;
+    border-radius: 0 0 16px 16px;
+}
+
+footer h6 {
+    color: var(--primary-dark);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* Bounding Box Styles */
+.bounding-box {
+    box-sizing: border-box;
+    position: absolute;
+    pointer-events: none;
+    z-index: 10;
+    animation: pulse 2s infinite;
+}
+
+.bounding-box div {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+@keyframes pulse-border {
+    0% { border-color: var(--primary-color); }
+    50% { border-color: var(--primary-light); }
+    100% { border-color: var(--primary-color); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#results-content {
+    animation: fadeIn 0.5s ease;
+}
+
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .display-5 {
+        font-size: 2rem;
+    }
+    
+    .drop-zone {
+        padding: 2rem !important;
+        min-height: 250px;
+    }
+    
+    .card-header {
+        padding: 1rem;
+    }
+    
+    .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    #image-preview {
+        max-height: 200px;
+    }
+    
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .feature-icon i {
+        font-size: 1.5rem;
+    }
+    
+    .step-number {
+        width: 25px;
+        height: 25px;
+        font-size: 14px;
+    }
+}
