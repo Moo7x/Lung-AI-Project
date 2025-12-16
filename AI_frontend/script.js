@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     resultsPlaceholder = document.getElementById('results-placeholder');
     resultsContent = document.getElementById('results-content');
 
-    // PDFdownload button listener
+    // PDF download button listener
     const downloadBtn = document.getElementById('download-report');
     if (downloadBtn) {
         downloadBtn.addEventListener('click', function() {
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
     analyzeBtn.addEventListener('click', async function() {
         // extract files
         if (!fileInput.files[0]) {
-            alert('Please select an MRI image first!');
+            alert('Please select an image first!');
             return;
         }
         
@@ -182,42 +182,18 @@ document.addEventListener('DOMContentLoaded', function() {
             errorAlert.innerHTML = `
                 <i class="fas fa-exclamation-triangle me-2"></i>
                 <strong>API Error:</strong> ${errorMsg}
-                <br><small>Showing demo data instead...</small>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             `;
             
             document.querySelector('.container').insertBefore(errorAlert, document.querySelector('.container').firstChild);
             
-            // reverse back to demoresults
-            setTimeout(() => {
-                showDemoResults();
-                analyzeBtn.innerHTML = '<i class="fas fa-play-circle me-2"></i>Try Again';
-                analyzeBtn.disabled = false;
-                analyzeBtn.classList.add('btn-success');
-                progressBar.classList.add('d-none');
-            }, 2000);
+            // Reset analyze button
+            analyzeBtn.innerHTML = '<i class="fas fa-play-circle me-2"></i>Try Again';
+            analyzeBtn.disabled = false;
+            analyzeBtn.classList.add('btn-success');
+            progressBar.classList.add('d-none');
         }
     });
-
-    // for showing demo results after 2 seconds
-    setTimeout(() => {
-        if (!previewSection.classList.contains('d-none')) return;
-        
-        // load sample image
-        imagePreview.src = 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
-        previewSection.classList.remove('d-none');
-        fileNameElement.textContent = 'Sample: lung_mri_sample.dcm';
-        
-        // show contents
-        const alertDiv = document.createElement('div');
-        alertDiv.className = 'alert alert-info alert-dismissible fade show mt-3';
-        alertDiv.innerHTML = `
-            <i class="fas fa-info-circle me-2"></i>
-            <strong>Demo Mode:</strong> Sample MRI loaded. Click "Start AI Analysis" to see predictions.
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        dropZone.parentNode.insertBefore(alertDiv, dropZone.nextSibling);
-    }, 2000);
 });
 
 // ==================== handle drop files function ====================
@@ -265,7 +241,7 @@ function handleFiles(files) {
             };
             reader.readAsDataURL(file);
         } else {
-            // show preview DICOM fies is can
+            // show preview DICOM files if can
             imagePreview.src = 'https://via.placeholder.com/400x300/2c80ff/ffffff?text=DICOM+MRI+Scan';
             previewSection.classList.remove('d-none');
             
@@ -352,7 +328,7 @@ function showYOLOResults(apiResult) {
         primaryDisease = `${primaryDisease} | Detected: ${diseaseList}`;
     }
     
-    //epdate content
+    // update content
     document.getElementById('disease-name').textContent = primaryDisease;
     document.getElementById('confidence-badge').textContent = `${Math.round(highestConfidence * 100)}%`;
     
@@ -407,7 +383,7 @@ function showYOLOResults(apiResult) {
         `;
     }
     
-    // uopdate recommendations list
+    // update recommendations list
     const recommendationsList = document.getElementById('recommendations-list');
     recommendationsList.innerHTML = '';
     
@@ -418,7 +394,7 @@ function showYOLOResults(apiResult) {
         recommendationsList.appendChild(li);
     });
     
-    // just to show rounding boxes on image
+    // just to show bounding boxes on image
     showBoundingBoxesOnImage(detections);
 }
 
@@ -755,60 +731,4 @@ function generatePDFReport() {
         console.error('PDF generation error:', error);
         alert('Error generating PDF: ' + error.message);
     }
-}
-
-// ==================== show demo rsults fdunction ====================
-function showDemoResults() {
-    // hide placeholder and show results (demo)
-    resultsPlaceholder.classList.add('d-none');
-    resultsContent.classList.remove('d-none');
-    
-    // demo results
-    const demoData = {
-        diseaseName: "Pneumonia",
-        confidence: 92,
-        severity: "High Risk",
-        icdCode: "J18.9",
-        lesions: [
-            { type: "Nodule", location: "Upper Lobe (Right)", size: "12mm", confidence: 92 },
-            { type: "Ground Glass", location: "Lower Lobe (Left)", size: "8mm", confidence: 78 }
-        ],
-        recommendations: [
-            "Immediate consultation with pulmonologist required",
-            "Follow-up CT scan recommended in 1 month",
-            "Antibiotic treatment advised"
-        ]
-    };
-    
-    // update
-    document.getElementById('disease-name').textContent = demoData.diseaseName;
-    document.getElementById('confidence-badge').textContent = `${demoData.confidence}%`;
-    document.getElementById('severity').textContent = demoData.severity;
-    document.getElementById('severity').className = 'text-danger';
-    document.getElementById('icd-code').textContent = demoData.icdCode;
-    
-    // update lesions table
-    const lesionsTable = document.getElementById('lesions-table');
-    lesionsTable.innerHTML = '';
-    
-    demoData.lesions.forEach((lesion, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${lesion.type}</td>
-            <td>${lesion.location}</td>
-            <td>${lesion.size}</td>
-            <td><span class="badge ${lesion.confidence > 80 ? 'bg-success' : 'bg-warning'}">${lesion.confidence}%</span></td>
-        `;
-        lesionsTable.appendChild(row);
-    });
-    
-    // update recommendations list
-    const recommendationsList = document.getElementById('recommendations-list');
-    recommendationsList.innerHTML = '';
-    
-    demoData.recommendations.forEach(rec => {
-        const li = document.createElement('li');
-        li.textContent = rec;
-        recommendationsList.appendChild(li);
-    });
 }
