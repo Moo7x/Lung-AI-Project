@@ -269,11 +269,6 @@ body {
     border-left-color: var(--warning-color);
 }
 
-.alert-info {
-    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-    border-left-color: var(--primary-color);
-}
-
 .alert-danger {
     background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
     border-left-color: var(--danger-color);
