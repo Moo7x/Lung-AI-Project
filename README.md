@@ -13,7 +13,7 @@ Addressing the challenge of diagnostic variability and radiologist fatigue, we e
 ###  System Interface
 The project features a user-friendly Drag-and-Drop interface for clinicians to upload scans and visualize AI predictions in real-time.
 
-![GUI Startup Menu](gui_startup.png)
+![GUI Startup Menu](gui_startup.jpg)
 > *Figure: The final integrated system interface for Chest X-ray analysis.*
 
 ---
