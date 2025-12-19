@@ -1,101 +1,129 @@
-# 🫁 Lung Abnormality Detection System (YOLOv8)
+#  Lung Abnormality Detection System (YOLOv8, YOLOv10, RT-DETR)
 
-![Project Status](https://img.shields.io/badge/Status-Prototype_Complete-green)
+![Status](https://img.shields.io/badge/Status-Completed-success)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-![Framework](https://img.shields.io/badge/Model-YOLOv8-orange)
-![Backend](https://img.shields.io/badge/API-FastAPI-teal)
+![Frontend](https://img.shields.io/badge/Frontend-HTML%2FCSS%2FJS-yellow)
+![Backend](https://img.shields.io/badge/Backend-FastAPI-teal)
 
-## 📖 Project Overview
+##  1.0 Introduction
+This project implements an AI-powered system to automatically detect and localize **14 different lung abnormalities** (e.g., Pneumonia, Cardiomegaly, Hernia) from chest X-rays.
 
-This project implements an end-to-end AI pipeline for detecting **14 distinct lung abnormalities** (e.g., Pneumonia, Cardiomegaly, Nodule) from Chest X-rays.
+Addressing the challenge of diagnostic variability and radiologist fatigue, we explored modern object detection architectures including **YOLOv8**, **YOLOv10**, and **RT-DETR**. The final deployed system utilizes **YOLOv8-Medium**, offering the best balance between training stability, detection accuracy, and computational efficiency for real-time medical analysis.
 
-Unlike standard classification tasks, we tackle **Object Detection** to localize specific disease regions. The system includes a full engineering workflow: from Exploratory Data Analysis (EDA) and Model Training to Error Analysis and a deployable REST API.
+###  System Interface
+The project features a user-friendly Drag-and-Drop interface for clinicians to upload scans and visualize AI predictions in real-time.
 
----
-
-## 📂 1. Dataset & Preparation
-
-We utilize a subset of the **NIH Chest X-ray Dataset** consisting of **4,934 images**.
-
-- **Split Strategy:** 80% Train / 10% Validation / 10% Test.
-- **Format:** Standard YOLO format (normalized bounding box coordinates).
-
-### Data Analysis (EDA).
-
-Before training, we conducted a rigorous analysis of the dataset structure (`notebooks/01_EDA.ipynb`).
-
-- **Class Imbalance:** The data shows a **3.4x imbalance ratio**, which is significant but manageable.
-  - _Most Common:_ **Emphysema** (552 instances)
-  - _Rarest:_ **Hernia** (162 instances)
-- **Action Taken:** To combat this, we implemented **Data Augmentation** (Mosaic, Scaling, Flipping) during the advanced training phase to ensure the model sees enough variations of the rare classes.
-
-_(Insert your dist.png image here)_
-
-> _Figure 1: Class distribution showing the prevalence of Emphysema vs. rare classes._
+![GUI Startup Menu](gui_startup.png)
+> *Figure: The final integrated system interface for Chest X-ray analysis.*
 
 ---
 
-## 🛠️ 2. Technical Workflow
+##  2.0 Dataset & Methodology
 
-We followed a modular engineering structure to ensure reproducibility.
+### 2.1 Data Collection
+We utilized the **Lung Disease Diagnosis and Detection Dataset (DST2016)** containing **4,934 images**, standardized to YOLO format.
+*   **Split Strategy:** 80% Train / 10% Validation / 10% Test.
+*   **Preprocessing:** Images resized to 640x640, normalized, and converted to 3-channel format.
 
-| Component    | Tech Stack               | Description                                                |
-| :----------- | :----------------------- | :--------------------------------------------------------- |
-| **Model**    | YOLOv8 (Ultralytics)     | Selected `yolov8m` (Medium) for balance of speed/accuracy. |
-| **Training** | PyTorch + CUDA           | Training on local GPU (RTX 3050 Ti).                       |
-| **Backend**  | FastAPI                  | Asynchronous REST API for model serving.                   |
-| **Tracking** | Weights & Biases / Local | Loss curves and mAP monitoring.                            |
+### 2.2 Exploratory Data Analysis (EDA)
+As analyzed in `notebooks/01_EDA.ipynb`, the dataset exhibits significant class imbalance:
+*   **Class Imbalance:** The data shows a **3.4x imbalance ratio**.
+    *   *Most Common:* **Emphysema** (552 instances)
+    *   *Rarest:* **Hernia** (162 instances)
+*   **Bounding Box Distribution:** "Nodules" and "Pleural Thickening" have the smallest areas, making them the hardest to detect compared to "Cardiomegaly."
 
----
+![Class Distribution](dist.png)
+> *Figure: Class distribution showing prevalence of Emphysema vs. rare classes.*
 
-## 📊 3. Model Experiments & Results
-
-We compared a Baseline training run against an Advanced run with hyperparameter tuning.
-
-| Experiment ID | Model Size | Augmentation         | Epochs | mAP50     | Observation                                                                                                        |
-| :------------ | :--------- | :------------------- | :----- | :-------- | :----------------------------------------------------------------------------------------------------------------- |
-| **Baseline**  | Medium     | None                 | 30     | **0.115** | Converged quickly; learned structural features.                                                                    |
-| **Advanced**  | Medium     | **Rot/Scale/Mosaic** | 40     | 0.107     | Slight drop. Hypothesis: The augmented data is significantly harder; model requires 100+ epochs to fully converge. |
-
-### Error Analysis (Failure Modes)
-
-Post-training analysis revealed three primary reasons for false negatives:
-
-1.  **Low Contrast:** The model misses findings in "washed-out" X-rays where tissue density is unclear.
-2.  **Small Lesions:** Tiny Nodules (<5% image area) are frequently missed due to 640x640 resizing.
-3.  **Occlusion:** Diseases hidden behind the heart or diaphragm are harder to detect.
+### 2.3 Data Augmentation
+To improve robustness against the imbalance and variations in patient positioning, we implemented advanced augmentation in `train_advanced.py`:
+*   **Mosaic (1.0):** Combines 4 images to improve small object detection.
+*   **Rotation (±15°):** Simulates patient misalignment.
+*   **Scaling (0.5):** Handles variations in camera distance.
 
 ---
 
-## 🚀 4. How to Run This Project
+##  3.0 System Architecture & File Structure
 
-This project is set up for easy reproduction.
-
-### A. Environment Setup
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/Moo7x/Lung-AI-Project.git
-
-# 2. Install dependencies
-pip install -r requirements.txt
-B. Run the API (Backend)
-
-We have separated the inference logic into a modular API.
-
-# Start the server
-uvicorn src.api.main:app --reload
-
-Docs: Go to http://127.0.0.1:8000/docs to test the POST /predict endpoint.
-
-C. Run Training (Reproducibility)
-
-To retrain the model from scratch using our settings:
-python train_advanced.py
-
-## 🔮Future Improvements
-
-1.Weighted Loss: Implement cls weights in YOLO to explicitly penalize missing rare classes like Hernia.
-2.Higher Resolution: Train at 1024x1024 to improve small Nodule detection.
-3.Ensembling: Combine predictions from YOLOv8 and Faster R-CNN.
+The repository is organized into modular components for Backend, Frontend, and Analysis.
+```text
+Lung-AI-Project/
+├── AI_frontend/                 # Frontend UI Assets (CSS/Images)
+├── YOLOV8,YOLOV10,RT-DETER/     # Comparison experiments for other models
+├── src/
+│   └── api/                     # FastAPI Backend Server
+├── notebooks/                   # EDA and Analysis Notebooks
+├── ensemble_results/            # Visualizations of Model Ensembling
+├── error_analysis_results/      # Failure cases (False Negatives)
+├── train_model.py               # Baseline training script
+├── train_advanced.py            # Advanced training with Hyperparameters
+├── index.html / script.js       # Main User Interface Logic
+└── README.md                    # Documentation
 ```
+
+### 3.1 Model Selection
+We evaluated three architectures. YOLOv8 Medium was chosen for deployment due to:
+* **Stability:** More stable training convergence than YOLOv10 on this specific medical dataset.
+* **Efficiency:** Faster inference speed than RT-DETR (Transformer-based), making it suitable for web deployment.
+
+---
+
+##  4.0 Validation & Results
+
+### 4.1 Performance Metrics
+We evaluated models based on mAP@0.5, Precision, and Recall.
+
+| Experiment | Model | mAP50 | Observation |
+|------------|-------|-------|-------------|
+| Baseline | YOLOv8-Medium | 0.115 | Best balance. Strong on Cardiomegaly, weaker on Nodules. |
+| Advanced | YOLOv8-Medium (Tuned) | 0.107 | Heavy augmentation caused slight underfitting due to limited epochs (40). |
+| Comparison | YOLOv8-Nano | 0.140 | Converged fastest due to low parameter count. |
+
+### 4.2 Error Analysis
+Post-training analysis (`error_analysis.py`) identified key challenges:
+* **Low Contrast:** Misses findings in "washed-out" X-rays where tissue density is unclear.
+* **Small Lesions:** Tiny nodules (<5% image area) are lost due to 640x640 resizing.
+* **Occlusion:** Findings behind the heart/diaphragm are frequently missed.
+
+---
+
+##  5.0 How to Run the System
+
+### Prerequisites
+```bash
+pip install -r requirements.txt
+```
+
+### A. Run the Backend (API)
+The FastAPI server handles image processing and inference.
+```bash
+# Navigate to the root folder
+uvicorn src.api.main:app --reload
+```
+
+**Note:** Ensure the model weights (`lung_model.pt`) are placed in `src/models/` (Download from Drive).
+
+### B. Run the Frontend (UI)
+The system uses a responsive HTML/JS interface.
+
+Simply open `index.html` in your web browser.
+
+Drag and drop an X-ray image to see predictions.
+
+---
+
+##  6.0 Future Improvements
+* **Weighted Loss:** Implement cls weights in YOLO to explicitly penalize missing rare classes like Hernia.
+* **Higher Resolution:** Train at 1024x1024 using SAHI (Slicing Aided Hyper Inference) to improve small Nodule detection.
+* **Ensembling:** Combine predictions from YOLOv8 and Faster R-CNN for higher recall.
+
+---
+
+##  License
+This project is licensed under the MIT License.
+
+##  Contributing
+Contributions are welcome! Please open an issue or submit a pull request.
+
+##  Contact
+For questions or collaboration, please reach out via GitHub Issues.
